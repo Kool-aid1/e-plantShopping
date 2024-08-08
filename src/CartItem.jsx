@@ -8,43 +8,43 @@ const CartItem = ({ onContinueShopping }) => {
   const dispatch = useDispatch();
 
   // Calculate total amount for all products in the cart
-  const calculateTotalAmount = (items) => {
-    let totalPrice = 0;
-    items.forEach((item) => {
-        totalPrice += parseFloat(item.cost.replace("$", "")) * item.quantity;
-    });
-    return totalPrice;
+  const calculateTotalAmount = () => {
+    return cart.reduce((total, item) => total + item.quantity * parseFloat(item.cost.replace('$', '')), 0).toFixed(2);
   };
 
+  // Handle continue shopping button click
   const handleContinueShopping = (e) => {
-    onContinueShopping(e);
-  };
-
-  const handleCheckoutShopping = (e) => {
     e.preventDefault();
-    alert('Functionality to be added for future reference');
+    onContinueShopping();
   };
 
+  // Handle increment button click
   const handleIncrement = (item) => {
-    dispatch(updateQuantity({ ...item, quantity: item.quantity + 1}));
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
+  // Handle decrement button click
   const handleDecrement = (item) => {
-    if(item.quantity > 1) {
-        dispatch(updateQuantity({ ...item, quantity: item.quantity - 1}));
-    } else if (item.quantity == 1) {
-        dispatch(removeItem(item.name));
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+    } else {
+      dispatch(removeItem(item.name));
     }
   };
 
+  // Handle remove button click
   const handleRemove = (item) => {
     dispatch(removeItem(item.name));
   };
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
-    const {cost, quantity} = item;
-    return parseFloat(cost.replace("$", "")) * quantity;
+    return (item.quantity * parseFloat(item.cost.replace('$', ''))).toFixed(2);
+  };
+
+  // Handle checkout button click
+  const handleCheckoutShopping = (e) => {
+    alert('Functionality to be added for future reference');
   };
 
   return (
@@ -72,12 +72,10 @@ const CartItem = ({ onContinueShopping }) => {
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
         <br />
-        <button className="get-started-button1">Checkout</button>
+        <button className="get-started-button1" onClick={(e) => handleCheckoutShopping(e)}>Checkout</button>
       </div>
     </div>
   );
 };
 
 export default CartItem;
-
-
